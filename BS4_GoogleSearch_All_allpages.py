@@ -13,7 +13,7 @@ from googletrans import Translator, constants
 import numpy as np
 
 # importing user-defined libraries
-from lib import *
+from lib.link_preprocessor import *
 
 
 # In[2]:
