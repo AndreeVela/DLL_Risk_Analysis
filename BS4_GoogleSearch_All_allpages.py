@@ -13,7 +13,7 @@ from googletrans import Translator, constants
 import numpy as np
 
 # importing user-defined libraries
-from lib.link_preprocessor import *
+from library.link_preprocessor import *
 
 
 # In[2]:
@@ -116,7 +116,7 @@ search_df['Heading'] = search_df['URL'].apply(extract_headline)
 
 
 # compiling the search dataframe
-search_df.head()
+#search_df.head()
 
 
 # In[11]:
@@ -124,7 +124,7 @@ search_df.head()
 
 # reading the date and applying date processing
 search_df['Date'] = search_df['Date'].apply(date_processor)
-search_df.head()
+#search_df.head()
 
 
 # In[12]:
