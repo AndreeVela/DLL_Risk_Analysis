@@ -13,7 +13,7 @@ from googletrans import Translator, constants
 import numpy as np
 
 # importing user-defined libraries
-from lib import *
+from lib.link_preprocessor import *
 
 
 # In[2]:
@@ -84,12 +84,16 @@ for page_no in range(1, n_pages):
         all_search_dict['Date'].append(date)
     
     ## navigating to the next page and scraping the subsequent google search URLs
-    search_page = "Page " + str(page_no + 1)
-    search_url = soup.find("a", {"aria-label" : search_page}).get("href")
-    r = requests.get("https://www.google.com" + search_url, headers = headers)
-    c = r.text
-    soup = BeautifulSoup(c, "html.parser")
-    search_data = soup.find_all("div", {"class" : "g"})
+    try:
+        search_page = "Page " + str(page_no + 1)
+        search_url = soup.find("a", {"aria-label" : search_page}).get("href")
+        r = requests.get("https://www.google.com" + search_url, headers = headers)
+        c = r.text
+        soup = BeautifulSoup(c, "html.parser")
+        search_data = soup.find_all("div", {"class" : "g"})
+    except:
+        # no more pages found
+        break
 
 
 # In[8]:
@@ -122,7 +126,7 @@ search_df['Date'] = search_df['Date'].apply(date_processor)
 search_df.head()
 
 
-# In[ ]:
+# In[12]:
 
 
 search_df.to_excel('Google_Search_All.xlsx', index = False)
