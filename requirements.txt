@@ -1,0 +1,13 @@
+
+beautifulsoup4
+black
+click
+googletrans==3.1.0-alpha
+jupyterlab
+jupytext
+openpyxl
+numpy
+pandas
+pylint
+pytest
+pytest-cov

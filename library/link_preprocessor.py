@@ -1,10 +1,10 @@
-import requests
-from bs4 import BeautifulSoup
-import pandas as pd
-import re
-from googletrans import Translator, constants
 import numpy as np
+import re
+import requests
+import pandas as pd
 
+from bs4 import BeautifulSoup
+from googletrans import Translator, constants
 
 
 # extracting the source of each of the URLs

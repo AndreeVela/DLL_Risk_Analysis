@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
-
-# In[1]:
-
-
+# %%
 # importing necessary libraries
+
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -13,51 +11,41 @@ from googletrans import Translator, constants
 import numpy as np
 
 # importing user-defined libraries
+
 from library.link_preprocessor import *
+from library.dataframe_preprocessor import generate_google_and_date_ranks
 
 
-# In[2]:
-
-
+# %%
 # inputs
 # entity = "Strukton"
 #n_pages = 4
 
 
-# In[3]:
-
-
+# %%
 # building the search query
 query = '(“Strukton”) AND scandal OR fraud OR investigation OR investigate OR litigation OR crime OR arrest OR allege OR guilty OR illegal OR indict OR terrorism OR terrorist OR smuggle OR smuggling OR corruption OR testify OR racketeer OR incriminate OR mafia OR convicted OR conviction OR accused OR defraud OR controversy OR controversial OR jail'
 
 
-# In[4]:
-
-
+# %%
 # dummying the header to provide the functionality of a bot to the web-crawler
 headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'}
 
 r = requests.get("https://www.google.com/search?q=" + query, headers = headers)
 
 
-# In[5]:
-
-
+# %%
 # getting the text response and parsing HTML
 c = r.text
 soup = BeautifulSoup(c, "html.parser")
 
 
-# In[6]:
-
-
+# %%
 # getting all the google searches and related data
 search_data = soup.find_all("div", {"class" : "g"})
 
 
-# In[7]:
-
-
+# %%
 # scraping all the search links appearing in the number of pages requested in the input
 
 all_search_dict = {'URL': [], 'Date' : []}
@@ -97,38 +85,37 @@ while(1):
         break
 
 
-# In[8]:
-
-
+# %%
 # converting the dictionary containing URL and Timestamp for each link into a DataFrame
 search_df = pd.DataFrame(all_search_dict)
 
 
-# In[9]:
-
-
+# %%
 # getting the Source and Headline from the URL
 search_df['Source'] = search_df['URL'].apply(extract_sourcename)
 search_df['Heading'] = search_df['URL'].apply(extract_headline)
 
 
-# In[10]:
-
-
+# %%
 # compiling the search dataframe
 #search_df.head()
 
 
-# In[11]:
-
-
+# %%
 # reading the date and applying date processing
 search_df['Date'] = search_df['Date'].apply(date_processor)
 #search_df.head()
 
 
-# In[12]:
-
-
+# %%
 search_df.to_excel('Google_Search_All.xlsx', index = False)
 
+
+# %% [markdown]
+# ## Sorgting the urls by: (1) Google Result Search, (2) Timestamp
+
+# %%
+search_df = generate_google_and_date_ranks( search_df )
+search_df
+
+# %%
