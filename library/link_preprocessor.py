@@ -16,8 +16,8 @@ def extract_sourcename(url):
     #    return False
     #else:
     #    return source_name
-    
-    
+
+
 # extracting the headline of each of the URLs
 def extract_headline(url):
     i = 1
