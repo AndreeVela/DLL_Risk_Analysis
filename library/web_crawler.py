@@ -1,16 +1,10 @@
 # importing necessary libraries
 import requests
-from bs4 import BeautifulSoup
+import bs4
 import pandas as pd
 import re
-from googletrans import Translator, constants
 import numpy as np
 import library.link_preprocessor as lp
-import library.query_builder as qb
-import library.web_crawler as wc
-
-
-
 
 
 # getting the soup from query url
@@ -37,10 +31,10 @@ def get_hitsinformation(query_url):
     
     # all_hits is a dictionary of structure: {'URL': [], 'Date' : []}
     all_hits = search_google_all(all_soup)
-    
+    print("ALL HITS:\n", all_hits)
     # news_hits is a dictionary of structure: {'URL': [], 'Date' : []}
     news_hits = search_google_news(news_soup)
-    
+    print("\n\nNEWS HITS:\n", news_hits)
     
     # final dataframe (left join of [all, news])
     all_hits_df = pd.DataFrame()
@@ -72,6 +66,7 @@ def search_google_all(soup):
     while(1):
         n_searches = len(search_data)
         for search in range(n_searches):
+            
             search_result = search_data[search]
             ## getting the search URL
             url = search_result.find("a").get("href")
@@ -82,7 +77,7 @@ def search_google_all(soup):
                 date_section = search_result.find('span', {"class":"MUxGbd wuQ4Ob WZ8Tjf"}).find_all('span')
                 for element in date_section:
                     text_element = element.text
-                    if date_checker(text_element):
+                    if lp.date_checker(text_element):
                         date = text_element
                         break
             except:
@@ -102,58 +97,86 @@ def search_google_all(soup):
         except:
             # no more pages
             break
-            
+
     return all_search_dict
 
 
-
-def search_google(soup, n_pages):
-    all_search_dict = {'URL': [], 'Date' : []}
-    # getting all the google searches and related data
-    search_data = soup.find_all("div", {"class" : "g"})    
+## Scrape from Google News Tab
+def search_google_news(soup):
+    news_search_dict = {'URL': [], 'Date' : []}
+    heading_list = []
+    date_list = []
+    url_list = []
     
-    # scraping all the search links appearing in the number of pages requested in the input    
-    for page_no in range(1, n_pages):
-        n_searches = len(search_data)
-        for search in range(n_searches):
-            search_result = search_data[search]
-            ## getting the search URL
-            url = search_result.find("a").get("href")
-            all_search_dict['URL'].append(url)
-
-            try:
-                ## trying to get the search date
-                date_section = search_result.find('span', {"class":"MUxGbd wuQ4Ob WZ8Tjf"}).find_all('span')
-                for element in date_section:
-                    text_element = element.text
-                    if date_checker(text_element):
-                        date = text_element
-                        break
-            except:
-                ## if no search date can be found...
-                date = ""
-
-            all_search_dict['Date'].append(date)
-
-        ## navigating to the next page and scraping the subsequent google search URLs
+    for page_no in range(2,10):
         try:
-            search_page = "Page " + str(page_no + 1)
+            heading_list.extend([e.get_text(strip=True) for e in soup.find_all('div', {"role":"heading"})])
+            date_list.extend([e.get_text(strip=True) for e in soup.find_all('div', {"class": "OSrXXb ZE0LJd YsWzw"})])
+            url_list.extend([e.get("href") for e in soup.find_all("a",{"class":"WlydOe"})])
+    
+            search_page = "Page " + str(page_no)
             search_url = soup.find("a", {"aria-label" : search_page}).get("href")
-            r = requests.get("https://www.google.com" + search_url, headers = headers)
-            c = r.text
-            soup = BeautifulSoup(c, "html.parser")
-            search_data = soup.find_all("div", {"class" : "g"})
+            soup = get_soup("https://www.google.com" + search_url)
+            print("\n\n\n***SOUP")
         except:
-            # no more pages found
             break
-            
-        return all_search_dict
+    
+    # print("\n\n\n\n***headings: ",len(heading_list),"\n",heading_list)
+    # print("\n\n\n\n***date: ",len(date_list),"\n",date_list)
+    # print("\nURL:",len(url_list),"\n", url_list)
+    
+    news_search_dict['URL'] = url_list
+    news_search_dict['Date'] = date_list
+    print("\n\nNEWS SEARCH DICT:\n", news_search_dict)
+    return news_search_dict
 
+
+# def search_google(soup, n_pages):
+#     all_search_dict = {'URL': [], 'Date' : []}
+#     # getting all the google searches and related data
+#     search_data = soup.find_all("div", {"class" : "g"})    
+    
+#     # scraping all the search links appearing in the number of pages requested in the input    
+#     for page_no in range(1, n_pages):
+#         n_searches = len(search_data)
+#         for search in range(n_searches):
+#             search_result = search_data[search]
+#             ## getting the search URL
+#             url = search_result.find("a").get("href")
+#             all_search_dict['URL'].append(url)
+
+#             try:
+#                 ## trying to get the search date
+#                 date_section = search_result.find('span', {"class":"MUxGbd wuQ4Ob WZ8Tjf"}).find_all('span')
+#                 for element in date_section:
+#                     text_element = element.text
+#                     if lp.date_checker(text_element):
+#                         date = text_element
+#                         break
+#             except:
+#                 ## if no search date can be found...
+#                 date = ""
+
+#             all_search_dict['Date'].append(date)
+
+#         ## navigating to the next page and scraping the subsequent google search URLs
+#         try:
+#             search_page = "Page " + str(page_no + 1)
+#             search_url = soup.find("a", {"aria-label" : search_page}).get("href")
+#             r = requests.get("https://www.google.com" + search_url, headers = headers)
+#             c = r.text
+#             soup = BeautifulSoup(c, "html.parser")
+#             search_data = soup.find_all("div", {"class" : "g"})
+#         except:
+#             # no more pages found
+#             break
+            
+#         return all_search_dict
 
 
 def getGoogleNewsURL(soup):
     topbarlinks = soup.find_all("div", {"class" : "hdtb-mitem"})
-    news_link = getGoogleNewsURL(topbarlinks)
+    
     ##Get the second item in google links
     i=0
     for link in topbarlinks:
@@ -163,7 +186,4 @@ def getGoogleNewsURL(soup):
             news_link = "https://google.com"+news_tag.find('a')['href']
             break
 
-
-
-   ## Get the href tag of child(a)
     return news_link
