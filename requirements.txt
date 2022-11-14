@@ -11,3 +11,4 @@ pandas
 pylint
 pytest
 pytest-cov
+flask
