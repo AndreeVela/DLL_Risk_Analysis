@@ -1,4 +1,4 @@
-# DLL Adversse Media Analysis
+# DLL Adverse Media Analysis
 Workspace for working in the intern project
 
 ## Setup
