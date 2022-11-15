@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block header %}
+	<h1>{% block title %}Search Results{% endblock %}</h1>
+	<a class="action" href="#">Download</a>
+
+{% endblock %}
+
+{% block content %}
+	<div>
+		<div><strong>Entity:</strong> <span>{{ entity }}</span></div>
+		<div><strong>Country:</strong> <span>{{ country }}</span></div>
+
+		{% if organizaiton != "" %}
+			<div><strong>Organization:</strong> <span>{{ organization }}</span></div>
+		{% endif %}
+
+		<div><strong>Search keywords: </strong> <span>{{ query_terms }}</span></div>
+		<div><strong>Used query:</strong> <span>{{ query_string }}</span></div>
+	</div>
+
+	{% for result in search_results %}
+		<article class="post">
+			<header>
+				<div>
+					<h1>{{ result['title'] }}</h1>
+					<div class="about">by {{ result['username'] }} on {{ result['created_at'].strftime('%Y-%m-%d') }}</div>
+				</div>
+			</header>
+			<p class="body">{{ result['body'] }}</p>
+		</article>
+		{% if not loop.last %}
+			<hr>
+		{% endif %}
+	{% endfor %}
+{% endblock %}

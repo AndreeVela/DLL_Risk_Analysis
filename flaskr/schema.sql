@@ -4,7 +4,8 @@ CREATE TABLE searchs (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	entity TEXT NOT NULL,
 	country TEXT NOT NULL,
+	organization TEXT,
 	query_terms TEXT NOT NULL,
-	query_string TEXT NOT NULL
+	query_string TEXT NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

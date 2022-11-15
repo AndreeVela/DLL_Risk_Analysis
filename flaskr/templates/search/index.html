@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block header %}
+	<h1>{% block title %}Register{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+	<form method="post">
+		<label for="entity">Username</label>
+		<input name="entity" id="entity" required>
+
+		<label for="country">Country</label>
+		<input name="country" id="country" required>
+
+		<button class="add_form_field" type='button'>
+			Add New Field &nbsp;<span >+</span>
+		</button>
+		<label for="search_terms">Search Terms</label>
+		<input name="search_terms" id="main_search_term" required>
+		<div class="search_terms_container"></div>
+
+
+		<label for="organization">Organization</label>
+		<input name="organization" id="organization">
+
+		<input type="submit" value="Search">
+	</form>
+{% endblock %}
+
+{% block javascript %}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var max_fields = 50;
+			var container = $(".search_terms_container");
+			var add_button = $(".add_form_field");
+
+			console.log( 'it worked' )
+
+			var x = 1;
+			$(add_button).click( function(e) {
+				e.preventDefault();
+
+				if (x < max_fields) {
+					x++;
+					$(container).append(
+						'<div><input type="text" name="search_terms"/><a href="#" class="delete">Delete</a></div>'
+					);
+				} else {
+					alert('You reached the maximum number of search terms')
+				}
+			});
+
+			$(container).on("click", ".delete", function(e) {
+				e.preventDefault();
+				$(this).parent('div').remove();
+				x--;
+			})
+		});
+	</script>
+{% endblock %}
