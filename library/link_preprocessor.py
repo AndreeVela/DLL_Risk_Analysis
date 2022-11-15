@@ -127,10 +127,6 @@ def date_processor(date):
             actual_date = np.nan
             flag = 0
 
-    # returns datetime format of yyyy-mm-dd
-<<<<<<< Updated upstream
-    return pd.to_datetime(actual_date, dayfirst = True)
-=======
     return pd.to_datetime(actual_date, dayfirst = True)
 
 
@@ -166,4 +162,3 @@ def entity_source_check(source, keywords_list):
 
     if flag == 0:
         return True
->>>>>>> Stashed changes
