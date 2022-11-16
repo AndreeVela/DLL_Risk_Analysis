@@ -19,15 +19,22 @@
 		<div><strong>Used query:</strong> <span>{{ query_string }}</span></div>
 	</div>
 
+
+	<!-- (['URL', 'Date', 'Source', 'Source Type', 'Heading', 'Credibility Score'] -->
+	<!-- .strftime('%Y-%m-%d') -->
 	{% for result in search_results %}
 		<article class="post">
 			<header>
 				<div>
-					<h1>{{ result['title'] }}</h1>
-					<div class="about">by {{ result['username'] }} on {{ result['created_at'].strftime('%Y-%m-%d') }}</div>
+					<h1><a href="{{ result['URL'] }}" target="_blank">{{ result['Source'] }}</a></h1>
+					<div class="about">by {{ result['Date'] }}</div>
 				</div>
 			</header>
-			<p class="body">{{ result['body'] }}</p>
+			<div class="body"><span><strong>Source Type:</strong></span>{{ result['Source Type'] }}</div>
+			<div class="body"><span><strong>Heading:</strong></span>{{ result['Heading'] }}</div>
+			<div class="body"><span><strong>Credibility Score:</strong></span>{{ result['Credibility Score'] }}</div>
+			<div class="body"><span><strong>Google Rank:</strong></span>{{ result['Google_rank'] }}</div>
+			<div class="body"><span><strong>Date Rank:</strong></span>{{ result['Date_rank'] }}</div>
 		</article>
 		{% if not loop.last %}
 			<hr>

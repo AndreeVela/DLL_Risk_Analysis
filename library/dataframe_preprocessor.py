@@ -22,7 +22,7 @@ def generate_google_and_date_ranks( df: pd.DataFrame ):
 	date_rank_name = 'Date_rank'
 
 	temp_df = (df[[ google_rank_name, 'Date' ]]
-            .sort_values( by=[ 'Date', 'Google_rank' ] )
+            .sort_values( by=[ 'Date' ], ascending=False )
             .reset_index( drop=True )
             .drop( columns=[ 'Date' ] ))
 
