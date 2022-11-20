@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block header %}
-	<h1>{% block title %}Register{% endblock %}</h1>
+	<h2>{% block title %}Search entity{% endblock %}</h2>
 {% endblock %}
 
 {% block content %}
-	<form method="post">
-		<label for="entity">Username</label>
+<!-- 	<form method="post">
+		<label for="entity">Entity</label>
 		<input name="entity" id="entity" required>
 
 		<label for="country">Country</label>
@@ -24,6 +24,49 @@
 		<input name="organization" id="organization">
 
 		<input type="submit" value="Search">
+	</form> -->
+
+	<form id="contactForm" method="post" class="needs-validation" novalidate>
+		<div class="mb-3">
+			<label class="form-label" for="entity">Entity</label>
+			<input class="form-control" id="entity" type="text" placeholder="Entity" data-sb-validations="required" name="entity" required/>
+			<div class="invalid-feedback" data-sb-feedback="entity:required">Entity is required.</div>
+		</div>
+		<div class="mb-3">
+			<label class="form-label" for="country">Country</label>
+			<input class="form-control" id="country" type="text" placeholder="Country" data-sb-validations="required" name="country" disabled="disabled"/>
+			<div class="invalid-feedback" data-sb-feedback="country:required">Country is required.</div>
+		</div>
+		<div class="mb-3">
+			<label class="form-label" for="searchTerms">Search Term</label>
+			<input class="form-control" id="searchTerms" type="text"
+				placeholder="Search Term"
+				data-sb-validations="required"
+				name="search_terms" disabled="disabled"/>
+			<div class="invalid-feedback" data-sb-feedback="searchTerms:required">Search Terms is required.</div>
+		</div>
+		<div class="mb-3">
+			<button class="add_form_field btn btn-lg" type='button'>
+				Add extra Search Term &nbsp;<span >+</span>
+			</button>
+		</div>
+		<div class="mb-3 search_terms_container">
+
+		</div>
+		<div class="mb-3">
+			<label class="form-label" for="organization">Organization</label>
+			<input class="form-control" id="organization" type="text" placeholder="Organization" data-sb-validations="" disabled="disabled"/>
+		</div>
+		<div class="d-none" id="submitSuccessMessage">
+			<div class="text-center mb-3">
+				<div class="fw-bolder">Form submission successful!</div>
+				<p>To activate this form, sign up at</p>
+				<a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
+			</div>
+		</div>
+		<div class="d-grid">
+			<button class="btn btn-primary btn-lg" id="submitButton" type="submit">Search</button>
+		</div>
 	</form>
 {% endblock %}
 
@@ -34,8 +77,6 @@
 			var container = $(".search_terms_container");
 			var add_button = $(".add_form_field");
 
-			console.log( 'it worked' )
-
 			var x = 1;
 			$(add_button).click( function(e) {
 				e.preventDefault();
@@ -43,18 +84,47 @@
 				if (x < max_fields) {
 					x++;
 					$(container).append(
-						'<div><input type="text" name="search_terms"/><a href="#" class="delete">Delete</a></div>'
+						// '<div><input class="form-control" type="text" name="search_terms" placeholder="Search Term"/><a href="#" class="delete">Delete</a></div>'
+						'<div class="row g-3 align-items-center">' +
+							'<div class="col-auto">' +
+								'<input class="form-control" type="text" name="search_terms" placeholder="Search Term"/>' +
+							'</div>' +
+							'<div class="col-auto">' +
+								'<span id="" class="form-text">' +
+									'<a href="#" class="delete">Delete</a>' +
+								'</span>' +
+							'</div>' +
+						'</div>'
 					);
 				} else {
 					alert('You reached the maximum number of search terms')
 				}
 			});
 
-			$(container).on("click", ".delete", function(e) {
+			$(container).on("click", ".col-auto", function(e) {
 				e.preventDefault();
 				$(this).parent('div').remove();
 				x--;
 			})
 		});
+
+		(() => {
+				'use strict'
+
+				// Fetch all the forms we want to apply custom Bootstrap validation styles to
+				const forms = document.querySelectorAll('.needs-validation')
+
+				// Loop over them and prevent submission
+				Array.from(forms).forEach(form => {
+					form.addEventListener('submit', event => {
+						if (!form.checkValidity()) {
+							event.preventDefault()
+							event.stopPropagation()
+						}
+
+						form.classList.add('was-validated')
+					}, false)
+			  })
+			})()
 	</script>
 {% endblock %}

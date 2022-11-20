@@ -1,25 +1,73 @@
 <!doctype html>
-<title>{% block title %}{% endblock %} - Flaskr</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
-	rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-<nav>
-	<h1>Entity Screening</h1>
-	<ul>
-		{% if g.back_to_index %}
-			<li><a href="{{ url_for('search.search') }}">Back</a></li>
-		{% endif %}
-	</ul>
-</nav>
-<section class="content">
-	<header>
-		{% block header %}{% endblock %}
-	</header>
-	{% for message in get_flashed_messages() %}
-		<div class="flash">{{ message }}</div>
-	{% endfor %}
-	{% block content %}{% endblock %}
-</section>
+<head>
+	<title>{% block title %}{% endblock %} - Flaskr</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+		rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+</head>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-{% block javascript %}{% endblock %}
+<body class="bg-light">
+	<div class="container">
+		<main>
+
+			<div class="py-5 text-center">
+				<img class="d-block mx-auto mb-4" src="{{ url_for('static', filename='img/dll_logo.png') }}" alt="" width="72" >
+				<h2>Entity Screening Process</h2>
+				<p class="lead">Below is an example form built entirely with Bootstrap’s form controls. Each required form group has a validation state that can be triggered by attempting to submit the form without completing it.</p>
+				<ul>
+					{% if g.back_to_index %}
+						<li><a class="btn btn-outline-secondary" href="{{ url_for('search.search') }}">Back</a></li>
+					{% endif %}
+				</ul>
+			</div>
+
+			{% for message in get_flashed_messages() %}
+				<div class="row g-5">
+					<div class="col">
+						<div class="alert alert-warning alert-dismissible fade show" role="alert">
+							<strong>Holy guacamole!</strong>{{ message }}
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+
+			<div class="row g-5">
+				<div class="col offset-md-3 col-md-6">
+					<header>
+						{% block header %}{% endblock %}
+					</header>
+				</div>
+			</div>
+
+			<div class="row g-5">
+				<div class="col offset-md-3 col-md-6">
+				{% block content %}{% endblock %}
+				</div>
+			</div>
+
+			{% for message in get_flashed_messages() %}
+				<div class="flash">{{ message }}</div>
+			{% endfor %}
+		</main>
+		<footer class="my-5 pt-5 text-muted text-center text-small">
+			<p class="mb-1">©<span id="year"></span> DLL</p>
+			<ul class="list-inline">
+				<li class="list-inline-item"><a target="_blank" href="https://www.dllgroup.com/nl/nl-nl/disclaimer">Disclaimer</a></li>
+				<li class="list-inline-item"><a target="_blank" href="https://www.dllgroup.com/nl/nl-nl/privacy-statement">Privacy Declaration</a></li>
+				<li class="list-inline-item"><a target="_blank" href="https://www.dllgroup.com/nl/nl-nl/cookie-statement">Cookie Statement</a></li>
+			</ul>
+		</footer>
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+	<script>
+		document.getElementById("year").innerHTML = new Date().getFullYear();
+	</script>
+	{% block javascript %}{% endblock %}
+
+
+</body>
+
+

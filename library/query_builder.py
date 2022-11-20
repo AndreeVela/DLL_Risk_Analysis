@@ -7,11 +7,12 @@ def get_inputFromUI():
     return keywords
 
 
-def get_queries():
-    keywords = get_inputFromUI()
+def get_queries(keywords=None, search_strings_path='./flaskr/queries/search_strings.txt'):
+    if not keywords:
+        keywords = get_inputFromUI()
     
     #read the queries from a file
-    with open('data/search_strings.txt', 'r', encoding="utf8") as file:
+    with open(search_strings_path, 'r', encoding="utf8") as file:
         queries = file.read().split('\n')
 
     for keyword in keywords:

@@ -1,43 +1,47 @@
 {% extends 'base.html' %}
 
 {% block header %}
-	<h1>{% block title %}Search Results{% endblock %}</h1>
-	<a class="action" href="#">Download</a>
-
+	<div class="d-md-flex flex-md-row-reverse align-items-center justify-content-between">
+		<a class="btn btn-sm btn btn-outline-secondary mb-3 mb-md-0 rounded-2" href="#" title="Download" rel="noopener">
+			Download
+		</a>
+		<h2 class="bd-title mb-0" id="content">{% block title %}Search Results{% endblock %}</h2>
+	</div>
+	<p></p>
 {% endblock %}
 
 {% block content %}
-	<div>
-		<div><strong>Entity:</strong> <span>{{ entity }}</span></div>
-		<div><strong>Country:</strong> <span>{{ country }}</span></div>
+	<div class="row">
+		<div class="col">
+			<div><strong>Entity:</strong> <span>{{ entity }}</span></div>
+			<div><strong>Country:</strong> <span>{{ country }}</span></div>
 
-		{% if organizaiton != "" %}
-			<div><strong>Organization:</strong> <span>{{ organization }}</span></div>
-		{% endif %}
+			{% if organizaiton != "" %}
+				<div><strong>Organization:</strong> <span>{{ organization }}</span></div>
+			{% endif %}
 
-		<div><strong>Search keywords: </strong> <span>{{ query_terms }}</span></div>
-		<div><strong>Used query:</strong> <span>{{ query_string }}</span></div>
+			<div><strong>Search keywords: </strong> <span>{{ query_terms }}</span></div>
+			<div><strong>Used query:</strong> <span>{{ query_string }}</span></div>
+		</div>
 	</div>
+	<hr>
 
-
-	<!-- (['URL', 'Date', 'Source', 'Source Type', 'Heading', 'Credibility Score'] -->
-	<!-- .strftime('%Y-%m-%d') -->
 	{% for result in search_results %}
-		<article class="post">
-			<header>
-				<div>
-					<h1><a href="{{ result['URL'] }}" target="_blank">{{ result['Source'] }}</a></h1>
-					<div class="about">by {{ result['Date'] }}</div>
-				</div>
-			</header>
-			<div class="body"><span><strong>Source Type:</strong></span>{{ result['Source Type'] }}</div>
-			<div class="body"><span><strong>Heading:</strong></span>{{ result['Heading'] }}</div>
-			<div class="body"><span><strong>Credibility Score:</strong></span>{{ result['Credibility Score'] }}</div>
-			<div class="body"><span><strong>Google Rank:</strong></span>{{ result['Google_rank'] }}</div>
-			<div class="body"><span><strong>Date Rank:</strong></span>{{ result['Date_rank'] }}</div>
-		</article>
+		<div class="row">
+			<div class="col">
+				<h5><a href="{{ result['URL'] }}" target="_blank">{{ result['Source'] }}</a></h5>
+				<p class="blog-post-meta"><strong>Date: </strong>{{ result['Date'] }}</p>
+				<p class="blog-post-body"><span><strong>Source Type:</strong></span> {{ result['Source Type'] }}</p>
+				<p class="blog-post-body"><span><strong>Heading:</strong></span> {{ result['Heading'] }}</p>
+				<p class="blog-post-body"><span><strong>Credibility Score:</strong></span> {{ result['Credibility Score'] }}</p>
+				<p class="blog-post-body"><span><strong>Google Rank:</strong></span> {{ result['Google_rank'] }}</p>
+				<p class="blog-post-body"><span><strong>Date Rank:</strong></span> {{ result['Date_rank'] }}</p>
+			</div>
+		</div>
+
 		{% if not loop.last %}
-			<hr>
+		<hr>
 		{% endif %}
+
 	{% endfor %}
 {% endblock %}

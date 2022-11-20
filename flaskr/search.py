@@ -17,12 +17,19 @@ from flaskr.db import get_db
 bp = Blueprint('search', __name__, url_prefix='/search')
 
 
-def process_request( entity, country, organization, query_terms ):
+def process_request( entity, country=None, organization=None ):
 	"""Performes the search"""
     
     # read the queries from a file
-	with open('./flaskr/queries/search_strings.txt',  encoding='utf-8') as f:
-		query_strings = f.readlines()
+	# with open('./flaskr/queries/search_strings.txt',  encoding='utf-8') as f:
+	# 	query_strings = f.readlines()
+	# [entity], './flaskr/queries/search_strings.txt'
+
+	query_terms = [ entity ]
+	query_terms = query_terms if not organization else query_terms + [ organization ]
+	query_terms = query_terms if not country else query_terms + [ country ]
+
+	query_strings = qb.get_queries([entity])
     
     # Declaring what is scaraped from results
 	final_hits_df = pd.DataFrame()
@@ -31,18 +38,15 @@ def process_request( entity, country, organization, query_terms ):
 
     # iterate over every query
 	for query in query_strings:
-		hits_df = wc.get_hitsinformation(url_prefix + query.replace('entity', entity), query_terms)
+		hits_df = wc.get_hitsinformation(url_prefix + query, query_terms)
 		final_hits_df = final_hits_df.append(hits_df)
 
     # credibility analysis (1 -> HIGHEST, 3 -> LOWEST)
 	final_hits_df['Credibility Score'] = final_hits_df['Source Type'].apply(ca.score)
 	
 	# create google and data rank attributes
-	print('DF size', final_hits_df.shape)
 	final_hits_df = dfp.generate_google_and_date_ranks(final_hits_df)
 	final_hits_df.sort_values(inplace=True, by=['Google_rank'])
-	print('DF size', final_hits_df.shape)
-
 	
 	return final_hits_df.to_dict('records'), query_strings
 
@@ -50,19 +54,20 @@ def process_request( entity, country, organization, query_terms ):
 @bp.route('/index', methods=('GET', 'POST'))
 def search():
 	if request.method == 'POST':
-		entity = request.form['entity']
-		country = request.form['country']
-		organization = request.form['organization']
-		# query_terms = request.form['search_terms']
-		query_terms = request.form.getlist( 'search_terms' )
+		entity = request.form['entity'] if request.form['entity'] else ''
+		# country = request.form['country'] if request.form['country'] else ''
+		# organization = request.form['organization'] if request.form['organization'] else ''
+		# query_terms = request.form.getlist( 'search_terms' ) if request.form['search_terms']  else ['']
+		# print(query_terms)
 
 		db = get_db()
 		error = None
 
 		# validate null fields
 
-		if not entity or not country or not query_terms:
-			error = 'You need to provide an entity, country, and query terms'
+		# if not entity or not country or not query_terms:
+		if not entity:
+			error = 'You need to provide an entity'
 
 		if error is None:
 
@@ -73,7 +78,7 @@ def search():
 					"INSERT INTO searchs (entity, country, organization, query_terms, query_string) "
 					"VALUES (?, ?, ?, ?, ?)"
 				),(
-					entity, country, organization, ','.join(query_terms), ''
+					entity, '', '', '', ''
 				),)
 
 				db.commit()
@@ -83,14 +88,11 @@ def search():
 				flash(error)
 				render_template('search/index.html')
 			else:
-				search_results, query_string = process_request(entity, country, organization, query_terms)
+				search_results, query_string = process_request(entity, '', '')
 				g.back_to_index = True
 
-				print( type(search_results) )
-				print(search_results)
-
-				return render_template('search/results.html', entity=entity, country=country, organization=organization,
-					query_terms=', '.join(query_terms), query_string=query_string, search_results=search_results)
+				return render_template('search/results.html', entity=entity, country='', organization='',
+					query_terms=', '.join([]), query_string='', search_results=search_results)
 		else:
 			flash(error)
 
