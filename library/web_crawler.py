@@ -9,6 +9,42 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
+def content_extractor(url):
+    # dummying the header to provide the functionality of a bot to the web-crawler
+    headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'}
+    r = requests.get("https://pledgetimes.com/controversial-gerard-sanderink-returns-as-director-at-strukton/", headers = headers)
+    
+    # getting the text response and parsing HTML
+    c = r.text
+    soup = BeautifulSoup(c, "html.parser")
+    
+    # getting the paragraph soup
+	search_data = soup.find_all('p')
+
+	# getting the heading soup
+	search_data_heading = soup.find_all('h1')
+	article_heading = search_data_heading[0].text
+    
+    # extracting and preprocessing the content
+    text = [re.sub(' +', ' ', search_data[i].text.replace('\n', ' ')) for i in range(0, len(search_data))]
+	text = [content.replace('\t', ' ') for content in text]
+	text = ' '.join(text)
+	list_of_lines = text.strip().split('.')
+
+	try:
+	    text = list_of_lines[1:list_of_lines.index('')]
+	    text = article_heading + ' ' + ''.join(text)
+	    text = re.sub(' +', ' ', text)
+	    
+	except:
+	    text = article_heading + ' ' + text
+	    text = re.sub(' +', ' ', text)
+
+    text = text.strip()
+    
+    return text
+
+
 # getting the soup from query url
 def get_soup(query_url):
     headers = {"Accept-Language": "en,en-NL", 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:77.0) Gecko/20100101 Firefox/77.0'}
@@ -161,7 +197,7 @@ def search_google_news(soup):
 #     all_search_dict = {'URL': [], 'Date' : []}
 #     # getting all the google searches and related data
 #     search_data = soup.find_all("div", {"class" : "g"})    
-    
+
 #     # scraping all the search links appearing in the number of pages requested in the input    
 #     for page_no in range(1, n_pages):
 #         n_searches = len(search_data)
@@ -196,5 +232,5 @@ def search_google_news(soup):
 #         except:
 #             # no more pages found
 #             break
-            
+
 #         return all_search_dict
