@@ -75,13 +75,13 @@ def date_processor(date):
         try:
             time_day = date_english.split()[1]
             delta_time = int(date_english.split()[0])
-            if 'hour' in time_day:
+            if 'hour' in time_day or 'hr' in time_day:
                 # subtract hours from real-time and get the date
                 actual_date = (pd.Timestamp.now() - pd.Timedelta(hours=delta_time)).date().strftime("%d/%m/%Y")
-            elif 'minute' in time_day:
+            elif 'minute' in time_day or 'min' in time_day:
                 # subtract minutes from real-time and get the date
                 actual_date = (pd.Timestamp.now() - pd.Timedelta(minutes=delta_time)).date().strftime("%d/%m/%Y")
-            elif 'second' in time_day:
+            elif 'second' in time_day or 'sec' in time_day:
                 # subtract seconds from real-time and get the date
                 actual_date = (pd.Timestamp.now() - pd.Timedelta(seconds=delta_time)).date().strftime("%d/%m/%Y")
             elif 'day' in time_day:
