@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, redirect, url_for
 from . import db, search
 
 
@@ -32,11 +32,13 @@ def create_app(test_config=None):
 
 	# a simple page that says hello
 
-	@app.route('/hello')
-	def hello():
-		return 'Hello, World!'
+	@app.route('/')
+	def redirect_to_search():
+		return redirect(url_for('search.search'))
+
 
 	db.init_app(app)
 	app.register_blueprint(search.bp)
+
 
 	return app

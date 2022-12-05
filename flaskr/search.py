@@ -51,7 +51,7 @@ def process_request( entity, country=None, organization=None ):
 	return final_hits_df.to_dict('records'), query_strings
 
 
-@bp.route('/index', methods=('GET', 'POST'))
+@bp.route('/', methods=('GET', 'POST'))
 def search():
 	if request.method == 'POST':
 		entity = request.form['entity'] if request.form['entity'] else ''
@@ -95,7 +95,7 @@ def search():
 				g.back_to_index = True
 
 				return render_template('search/results.html', entity=entity, country='', organization='',
-					query_terms=', '.join([]), query_strings=query_strings, search_results=search_results[:20])
+					query_terms=query_terms, query_strings=query_strings, search_results=search_results[:20])
 		else:
 			flash(error)
 
