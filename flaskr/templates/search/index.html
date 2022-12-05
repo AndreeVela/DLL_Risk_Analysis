@@ -38,24 +38,21 @@
 			<div class="invalid-feedback" data-sb-feedback="country:required">Country is required.</div>
 		</div>
 		<div class="mb-3">
-			<label class="form-label" for="searchTerms">Search Term</label>
-			<input class="form-control" id="searchTerms" type="text"
+			<label class="form-label" for="searchTerms">Associated Parties</label>
+			<!-- <input class="form-control" id="searchTerms" type="text"
 				placeholder="Search Term"
-				data-sb-validations="required"
-				name="search_terms" disabled="disabled"/>
+				name="search_terms"
+				aria-describedby="searchTermsHelp"/> -->
+			<div id="searchTermsHelp" class="form-text">Add any other significan entity that should be looked for. Add every extra entity in an individual input field.</div>
 			<div class="invalid-feedback" data-sb-feedback="searchTerms:required">Search Terms is required.</div>
 		</div>
 		<div class="mb-3">
-			<button class="add_form_field btn btn-lg" type='button'>
-				Add extra Search Term &nbsp;<span >+</span>
+			<button class="add_form_field btn btn-lg btn-outline-secondary" type='button'>
+				Add field &nbsp;<span >+</span>
 			</button>
 		</div>
 		<div class="mb-3 search_terms_container">
 
-		</div>
-		<div class="mb-3">
-			<label class="form-label" for="organization">Organization</label>
-			<input class="form-control" id="organization" type="text" placeholder="Organization" data-sb-validations="" disabled="disabled"/>
 		</div>
 		<div class="d-none" id="submitSuccessMessage">
 			<div class="text-center mb-3">
@@ -84,10 +81,9 @@
 				if (x < max_fields) {
 					x++;
 					$(container).append(
-						// '<div><input class="form-control" type="text" name="search_terms" placeholder="Search Term"/><a href="#" class="delete">Delete</a></div>'
-						'<div class="row g-3 align-items-center">' +
+						'<div class="row g-3 align-items-center pb-3">' +
 							'<div class="col-auto">' +
-								'<input class="form-control" type="text" name="search_terms" placeholder="Search Term"/>' +
+								'<input class="form-control" type="text" name="search_terms" placeholder="Search Term" required/>' +
 							'</div>' +
 							'<div class="col-auto">' +
 								'<span id="" class="form-text">' +
@@ -101,7 +97,7 @@
 				}
 			});
 
-			$(container).on("click", ".col-auto", function(e) {
+			$(container).on("click", ".col-auto:last-child", function(e) {
 				e.preventDefault();
 				$(this).parent('div').remove();
 				x--;

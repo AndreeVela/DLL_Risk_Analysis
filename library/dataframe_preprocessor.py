@@ -27,15 +27,7 @@ def generate_google_and_date_ranks( df: pd.DataFrame ):
 	temp_df.index.name = date_rank_name
 	temp_df.reset_index( inplace=True )
 
-	temp_df.to_csv('date_rank.csv')
-	df.to_csv('google_rank.csv')
-
 	df = df.merge( temp_df, how='left', on='Google_rank' )
-
-	df.to_csv('wrong_rank.csv')
-
-	print( 'temp_df.shape', temp_df.shape )
-	print( 'df.shape', df.shape )
 	
 	# selecting columns in the right order
 	

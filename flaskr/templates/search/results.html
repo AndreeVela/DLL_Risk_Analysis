@@ -21,7 +21,14 @@
 			{% endif %}
 
 			<div><strong>Search keywords: </strong> <span>{{ query_terms }}</span></div>
-			<div><strong>Used query:</strong> <span>{{ query_string }}</span></div>
+			<div><strong>Used query:</strong>
+			<div>
+				<ul class="query_list">
+					{% for q in query_strings %}
+						<li class="query_term">{{ q }}</li>
+					{% endfor %}
+				</ul>
+			</div>
 		</div>
 	</div>
 	<hr>
@@ -29,10 +36,10 @@
 	{% for result in search_results %}
 		<div class="row">
 			<div class="col">
-				<h5><a href="{{ result['URL'] }}" target="_blank">{{ result['Source'] }}</a></h5>
+				<h5><a href="{{ result['URL'] }}" target="_blank">{{ result['Heading'] }}</a></h5>
 				<p class="blog-post-meta"><strong>Date: </strong>{{ result['Date'] }}</p>
+				<p class="blog-post-body"><span><strong>Heading:</strong></span> {{ result['Source'] }}</p>
 				<p class="blog-post-body"><span><strong>Source Type:</strong></span> {{ result['Source Type'] }}</p>
-				<p class="blog-post-body"><span><strong>Heading:</strong></span> {{ result['Heading'] }}</p>
 				<p class="blog-post-body"><span><strong>Credibility Score:</strong></span> {{ result['Credibility Score'] }}</p>
 				<p class="blog-post-body"><span><strong>Google Rank:</strong></span> {{ result['Google_rank'] }}</p>
 				<p class="blog-post-body"><span><strong>Date Rank:</strong></span> {{ result['Date_rank'] }}</p>

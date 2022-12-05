@@ -13,7 +13,7 @@
 			<div class="py-5 text-center">
 				<img class="d-block mx-auto mb-4" src="{{ url_for('static', filename='img/dll_logo.png') }}" alt="" width="72" >
 				<h2>Entity Screening Process</h2>
-				<p class="lead">Below is an example form built entirely with Bootstrap’s form controls. Each required form group has a validation state that can be triggered by attempting to submit the form without completing it.</p>
+				<p class="lead">Adverse media checks can reveal an individual’s or entity’s involvement with money laundering, financial fraud, drug trafficking, financial threat, organized crime, financial terrorism and more. These links not only pose a serious threat to DLL’s reputation and the financial system, but also can lead to legal repercussionsas DLL operatesin a regulated sector.</p>
 				<ul>
 					{% if g.back_to_index %}
 						<li><a class="btn btn-outline-secondary" href="{{ url_for('search.search') }}">Back</a></li>
@@ -33,7 +33,7 @@
 			{% endfor %}
 
 			<div class="row g-5">
-				<div class="col offset-md-3 col-md-6">
+				<div class="col offset-lg-3 col-lg-6">
 					<header>
 						{% block header %}{% endblock %}
 					</header>
@@ -41,7 +41,7 @@
 			</div>
 
 			<div class="row g-5">
-				<div class="col offset-md-3 col-md-6">
+				<div class="col offset-lg-3 col-lg-6">
 				{% block content %}{% endblock %}
 				</div>
 			</div>

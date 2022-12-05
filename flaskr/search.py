@@ -56,9 +56,12 @@ def search():
 	if request.method == 'POST':
 		entity = request.form['entity'] if request.form['entity'] else ''
 		# country = request.form['country'] if request.form['country'] else ''
-		# organization = request.form['organization'] if request.form['organization'] else ''
-		# query_terms = request.form.getlist( 'search_terms' ) if request.form['search_terms']  else ['']
-		# print(query_terms)
+
+		if 'search_terms' in request.form.keys():
+			query_terms = request.form.getlist( 'search_terms' )
+		else:
+			query_terms = []
+		print(query_terms)
 
 		db = get_db()
 		error = None
@@ -88,11 +91,11 @@ def search():
 				flash(error)
 				render_template('search/index.html')
 			else:
-				search_results, query_string = process_request(entity, '', '')
+				search_results, query_strings = process_request(entity, '', '')
 				g.back_to_index = True
 
 				return render_template('search/results.html', entity=entity, country='', organization='',
-					query_terms=', '.join([]), query_string='', search_results=search_results)
+					query_terms=', '.join([]), query_strings=query_strings, search_results=search_results[:20])
 		else:
 			flash(error)
 
