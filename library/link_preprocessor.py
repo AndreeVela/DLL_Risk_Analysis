@@ -39,7 +39,7 @@ def extract_headline(url):
 
 
 def date_checker(text):
-    # checking whether a 4-digit year
+    # checking whether a 4-digit year or not
     if text.split()[-1].isnumeric() and int(text.split()[-1]) >= 1000:
         return True
     elif 'ago' in text:
@@ -100,27 +100,33 @@ def date_processor(date):
             flag = 0
     
     else:
+        # it is an explicit date, so the format needs to be checked
+        date_check_list = date_english.split()
+        if len(date_check_list) >= 2 and date_check_list[0].isnumeric() == False:
+            # if month comes first ....
+            date_english = date_english.split()[1].strip(',') + ' ' + date_english.split()[0] + ' ' + date_english.split()[2]
+
         if len(date_english.split()) == 3:
             # day, month and year all are present
             flag = 1
             try:
-                actual_date = date_english.split()[0] + '/' + month_to_num[date_english.split()[1][:3].lower()] + '/' + date_english.split()[2]
+                actual_date = date_english.split()[0] + '/' + month_to_num[date_english.split()[1][:3].lower().strip(',')] + '/' + date_english.split()[2]
             except:
-                actual_date = date_english.split()[0] + '/' + month_to_num[date_english.split()[1][:3].lower() + '.'] + '/' + date_english.split()[2]
+                actual_date = date_english.split()[0] + '/' + month_to_num[date_english.split()[1][:3].lower() + '.'.strip(',')] + '/' + date_english.split()[2]
         
         elif len(date_english.split()) == 2:
             # only month and year are present
             flag = 1
             try:
-                actual_date = month_to_num[date_english.split()[0][:3].lower()] + '/' + date_english.split()[1]
+                actual_date = month_to_num[date_english.split()[0][:3].lower().strip(',')] + '/' + date_english.split()[1]
             except:
-                actual_date = month_to_num[date_english.split()[0][:3].lower() + '.'] + '/' + date_english.split()[1]
+                actual_date = month_to_num[date_english.split()[0][:3].lower() + '.'.strip(',')] + '/' + date_english.split()[1]
 
             
         elif len(date_english.split()) == 1:
             # only year is present
             flag = 1
-            actual_date = date_english.split()[0]
+            actual_date = date_english.split()[0].strip(',')
             
         else:
             # unidentified date
