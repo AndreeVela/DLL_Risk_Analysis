@@ -11,3 +11,6 @@ pylint
 pytest
 pytest-cov
 flask
+vaderSentiment
+nltk
+sentence-transformers

@@ -3,7 +3,8 @@ import functools
 import library.link_preprocessor as lp
 import library.query_builder as qb
 import library.web_crawler as wc
-import library.credibility_analysis as ca
+import library.credibility_analysis as cra
+import library.content_analysis as ca
 import library.dataframe_preprocessor as dfp
 import pandas as pd
 
@@ -17,34 +18,57 @@ from flaskr.db import get_db
 bp = Blueprint('search', __name__, url_prefix='/search')
 
 
-def process_request( entity, country=None, organization=None ):
+def process_request( query_terms, country=None):
 	"""Performes the search"""
-    
-    # read the queries from a file
-	# with open('./flaskr/queries/search_strings.txt',  encoding='utf-8') as f:
-	# 	query_strings = f.readlines()
-	# [entity], './flaskr/queries/search_strings.txt'
 
-	query_terms = [ entity ]
-	query_terms = query_terms if not organization else query_terms + [ organization ]
 	query_terms = query_terms if not country else query_terms + [ country ]
+	query_strings = qb.get_queries(query_terms)
+	query_strings, keyword_mapper, adverse_type_mapper = qb.get_queries()
 
-	query_strings = qb.get_queries([entity])
-    
-    # Declaring what is scaraped from results
+	# Declaring what is scaraped from results
+
 	final_hits_df = pd.DataFrame()
-    
 	url_prefix = 'https://google.com/search?q='
 
-    # iterate over every query
+	# iterate over every query
+
+	indexer = 0
 	for query in query_strings:
+		print( f"Crawling query {indexer + 1}" )
 		hits_df = wc.get_hitsinformation(url_prefix + query, query_terms)
+		hits_df['Target Search'] = keyword_mapper[indexer]
+		hits_df['Adverse Type'] = adverse_type_mapper[indexer]
+		indexer += 1
 		final_hits_df = final_hits_df.append(hits_df)
 
-    # credibility analysis (1 -> HIGHEST, 3 -> LOWEST)
-	final_hits_df['Credibility Score'] = final_hits_df['Source Type'].apply(ca.score)
+	# credibility analysis (1 -> HIGHEST, 3 -> LOWEST)
+
+	print( 'Credibility Scorer' )
+	final_hits_df['Credibility Score'] = final_hits_df['Source Type'].apply(cra.score)
+
+	# relevancy analysis (< 5 years: 'Recency' = 1 and 0 otherwise)
+
+	print( 'Recency Assessment' )
+	final_hits_df['Recency'] = final_hits_df['Date'].map(lambda date: 1 if (date.today().year - date.year) <= 5 else 0)
+
+	# performing content analysis for non-social media sources
+	## creating a new columns, 'heading' and 'content' to get the content for non-Social Media sources
+
+	print( 'Content analysis for non-social-media sources' )
+	heading_content_df = final_hits_df.loc[final_hits_df['Source Type'] != 'Social Media', 'URL'].apply(ca.extractor)
+	headings = [heading_content[0] for heading_content in list(heading_content_df)]
+	contents = [heading_content[1] for heading_content in list(heading_content_df)]
+
+	final_hits_df.loc[final_hits_df['Source Type'] != 'Social Media', 'Heading'] = headings
+	final_hits_df.loc[final_hits_df['Source Type'] != 'Social Media', 'Content'] = contents
+
+	# measuring the adversity score for each and every content
+
+	print( 'Adversity Scoring' )
+	final_hits_df.loc[final_hits_df['Source Type'] != 'Social Media', 'Adversity Score'] = final_hits_df.loc[final_hits_df['Source Type'] != 'Social Media', 'Content'].apply(ca.adversity)
 	
 	# create google and data rank attributes
+
 	final_hits_df = dfp.generate_google_and_date_ranks(final_hits_df)
 	final_hits_df.sort_values(inplace=True, by=['Google_rank'])
 	
@@ -61,6 +85,8 @@ def search():
 			query_terms = request.form.getlist( 'search_terms' )
 		else:
 			query_terms = []
+
+		query_terms = [entity] + query_terms
 		print(query_terms)
 
 		db = get_db()
@@ -76,26 +102,27 @@ def search():
 
 			# saving the query
 
-			try:
-				db.execute((
-					"INSERT INTO searchs (entity, country, organization, query_terms, query_string) "
-					"VALUES (?, ?, ?, ?, ?)"
-				),(
-					entity, '', '', '', ''
-				),)
+			# try:
+			# 	db.execute((
+			# 		"INSERT INTO searchs (entity, country, organization, query_terms, query_string) "
+			# 		"VALUES (?, ?, ?, ?, ?)"
+			# 	),(
+			# 		entity, '', '', '', ''
+			# 	),)
 
-				db.commit()
-			except db.IntegrityError:
-				g.back_to_index = False
-				error = f"Error occuried while saving the search in the DB"
-				flash(error)
-				render_template('search/index.html')
-			else:
-				search_results, query_strings = process_request(entity, '', '')
-				g.back_to_index = True
+			# 	db.commit()
+			# except db.IntegrityError:
+			# 	g.back_to_index = False
+			# 	error = f"Error occuried while saving the search in the DB"
+			# 	flash(error)
+			# 	render_template('search/index.html')
+			# else:
 
-				return render_template('search/results.html', entity=entity, country='', organization='',
-					query_terms=query_terms, query_strings=query_strings, search_results=search_results[:20])
+			search_results, query_strings = process_request(query_terms, '')
+			g.back_to_index = True
+
+			return render_template('search/results.html', entity=entity, country='', organization='',
+				query_terms=query_terms, query_strings=query_strings, search_results=search_results)
 		else:
 			flash(error)
 

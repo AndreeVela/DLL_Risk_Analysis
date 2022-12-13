@@ -37,7 +37,7 @@ def create_app(test_config=None):
 		return redirect(url_for('search.search'))
 
 
-	db.init_app(app)
+	# db.init_app(app)
 	app.register_blueprint(search.bp)
 
 
