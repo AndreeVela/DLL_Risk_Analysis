@@ -95,9 +95,10 @@ if __name__ == "__main__":
     top_hits_df_notsocialmedia['Reliability Score'] = avg_doc_similarity_scores
 
     top_hits_df = pd.merge(top_hits_df, top_hits_df_notsocialmedia, on = 'URL', how = 'outer')
+    top_hits_df.drop_duplicates(inplace = True)
     '''
 
     
     print('Adverse Media Screened !!!')
     final_hits_df.to_excel('AMS.xlsx', index = False)
-    top_hits_df.to_excel('AMS_top_hits.xlsx', index = False)
+    top_hits_df.to_excel('AMS_tophits.xlsx', index = False)
