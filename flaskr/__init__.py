@@ -39,8 +39,15 @@ def create_app(test_config=None):
 
 
 	# db.init_app(app)
-	app.logger.setLevel(logging.INFO)
 	app.register_blueprint(search.bp)
 
+	# logging configuration
+
+	logging.basicConfig(
+		format='%(asctime)s %(levelname)-8s %(message)s',
+		level=logging.INFO,
+		datefmt='%Y-%m-%d %H:%M:%S')
+
+	app.logger.setLevel(logging.INFO)
 
 	return app
