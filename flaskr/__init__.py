@@ -1,4 +1,5 @@
 import os
+import logging
 
 from flask import Flask, redirect, url_for
 from . import db, search
@@ -38,6 +39,7 @@ def create_app(test_config=None):
 
 
 	# db.init_app(app)
+	app.logger.setLevel(logging.INFO)
 	app.register_blueprint(search.bp)
 
 

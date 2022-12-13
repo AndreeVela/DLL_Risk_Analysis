@@ -6,6 +6,7 @@ import library.web_crawler as wc
 import library.credibility_analysis as cra
 import library.content_analysis as ca
 import library.dataframe_preprocessor as dfp
+from flask import current_app as app
 import pandas as pd
 
 from flask import (
@@ -34,7 +35,7 @@ def process_request( query_terms, country=None):
 
 	indexer = 0
 	for query in query_strings:
-		print( f"Crawling query {indexer + 1}" )
+		app.logger.info( f"Crawling query {indexer + 1}" )
 		hits_df = wc.get_hitsinformation(url_prefix + query, query_terms)
 		hits_df['Target Search'] = keyword_mapper[indexer]
 		hits_df['Adverse Type'] = adverse_type_mapper[indexer]
@@ -43,18 +44,18 @@ def process_request( query_terms, country=None):
 
 	# credibility analysis (1 -> HIGHEST, 3 -> LOWEST)
 
-	print( 'Credibility Scorer' )
+	app.logger.info( 'Credibility Scorer' )
 	final_hits_df['Credibility Score'] = final_hits_df['Source Type'].apply(cra.score)
 
 	# relevancy analysis (< 5 years: 'Recency' = 1 and 0 otherwise)
 
-	print( 'Recency Assessment' )
+	app.logger.info( 'Recency Assessment' )
 	final_hits_df['Recency'] = final_hits_df['Date'].map(lambda date: 1 if (date.today().year - date.year) <= 5 else 0)
 
 	# performing content analysis for non-social media sources
 	## creating a new columns, 'heading' and 'content' to get the content for non-Social Media sources
 
-	print( 'Content analysis for non-social-media sources' )
+	app.logger.info( 'Content analysis for non-social-media sources' )
 	heading_content_df = final_hits_df.loc[final_hits_df['Source Type'] != 'Social Media', 'URL'].apply(ca.extractor)
 	headings = [heading_content[0] for heading_content in list(heading_content_df)]
 	contents = [heading_content[1] for heading_content in list(heading_content_df)]
@@ -64,7 +65,7 @@ def process_request( query_terms, country=None):
 
 	# measuring the adversity score for each and every content
 
-	print( 'Adversity Scoring' )
+	app.logger.info( 'Adversity Scoring' )
 	final_hits_df.loc[final_hits_df['Source Type'] != 'Social Media', 'Adversity Score'] = final_hits_df.loc[final_hits_df['Source Type'] != 'Social Media', 'Content'].apply(ca.adversity)
 	
 	# create google and data rank attributes
@@ -87,7 +88,7 @@ def search():
 			query_terms = []
 
 		query_terms = [entity] + query_terms
-		print(query_terms)
+		app.logger.info('Query terms: %s', query_terms)
 
 		db = get_db()
 		error = None
