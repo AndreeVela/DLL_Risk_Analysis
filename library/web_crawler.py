@@ -73,7 +73,7 @@ def get_hitsinformation(query_url, keywords_list):
     all_and_news_df['Source Type Check'] = all_and_news_df['Source'].apply(lp.entity_source_check, args = (keywords_list,))
     all_and_news_df.loc[all_and_news_df['Source Type Check'] == False, 'Source Type'] = ''
 
-    all_and_news_df['Heading'] = all_and_news_df['URL'].apply(lp.extract_headline)
+    #all_and_news_df['Heading'] = all_and_news_df['URL'].apply(lp.extract_headline)
 
     # removing the 'NEWS' and 'Source Type Check' columns as it does not make sense anymore....
     all_and_news_df.drop(['NEWS', 'Source Type Check'], axis = 1, inplace = True)
@@ -135,7 +135,9 @@ def search_google_news(soup):
     date_list = []
     url_list = []
     
+#    page_no = 2
     for page_no in range(2,10):
+#    while(1):
         try:
             heading_list.extend([e.get_text(strip=True) for e in soup.find_all('div', {"role":"heading"})])
             date_list.extend([e.get_text(strip=True) for e in soup.find_all('div', {"class": "OSrXXb ZE0LJd YsWzw"})])

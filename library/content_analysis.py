@@ -8,17 +8,13 @@ import numpy as np
 # importing user-defined libraries
 from library.link_preprocessor import *
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from library.web_crawler import get_soup
 
 
 # extracts the content in English
 def extractor(url):
-    # dummying the header to provide the functionality of a bot to the web-crawler
-    headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'}
-    r = requests.get(url, headers = headers)
-    
-    # getting the text response and parsing HTML
-    c = r.text
-    soup = BeautifulSoup(c, "html.parser")
+    # getting the soup object
+    soup = get_soup(url)
 
     # getting the paragraph soup
     search_data = soup.find_all('p')
@@ -45,12 +41,16 @@ def extractor(url):
     	text = re.sub(' +', ' ', text)
         
     text = text.strip()
+
     
     # translating content in any language to English
-    translator = Translator()
-    text = translator.translate(text, dest='en').text
-    
-    return text
+    #translator = Translator()
+    #text = translator.translate(text, dest='en').text
+
+    if article_heading == '':
+        article_heading = text.split('.')[0].strip()
+
+    return article_heading, text
 
 
 # checking whether any keyword is present in the content

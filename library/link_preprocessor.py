@@ -33,9 +33,9 @@ def extract_headline(url):
     headline = re.sub('[^A-Za-z ]+', '', headline)
     
     # translating the headlines to English
-    translator = Translator()
-    headline_english = translator.translate(headline, dest='en').text
-    return headline_english
+    #translator = Translator()
+    #headline = translator.translate(headline, dest='en').text
+    return headline
 
 
 def date_checker(text):
