@@ -2,7 +2,7 @@
 
 {% block header %}
 	<div class="d-md-flex flex-md-row-reverse align-items-center justify-content-between">
-		<a class="btn btn-sm btn btn-outline-secondary mb-3 mb-md-0 rounded-2" href="#" title="Download" rel="noopener">
+		<a class="btn btn-sm btn btn-outline-secondary mb-3 mb-md-0 rounded-2" href="javascript:window.print();" title="Download" rel="noopener">
 			Download
 		</a>
 		<h2 class="bd-title mb-0" id="content">{% block title %}Search Results{% endblock %}</h2>
@@ -38,11 +38,19 @@
 			<div class="col">
 				<h5><a href="{{ result['URL'] }}" target="_blank">{{ result['Heading'] }}</a></h5>
 				<p class="blog-post-meta"><strong>Date: </strong>{{ result['Date'] }}</p>
-				<p class="blog-post-body"><span><strong>Heading:</strong></span> {{ result['Source'] }}</p>
-				<p class="blog-post-body"><span><strong>Source Type:</strong></span> {{ result['Source Type'] }}</p>
-				<p class="blog-post-body"><span><strong>Credibility Score:</strong></span> {{ result['Credibility Score'] }}</p>
-				<p class="blog-post-body"><span><strong>Google Rank:</strong></span> {{ result['Google_rank'] }}</p>
-				<p class="blog-post-body"><span><strong>Date Rank:</strong></span> {{ result['Date_rank'] }}</p>
+				<p class="blog-post-datum"><span><strong>Source:</strong></span> {{ result['Source'] }}</p>
+				<p class="blog-post-datum"><span><strong>Source Type:</strong></span> {{ result['Source Type'] }}</p>
+				<p class="blog-post-datum">
+					<span><strong>Target Search:</strong></span>
+					<span class="badge rounded-pill text-bg-primary">{{ result['Target Search'] }}</span>
+				</p>
+				<p class="blog-post-datum">
+					<span><strong>Adverse Type:</strong></span>
+					<span class="badge text-bg-secondary">{{ result['Adverse Type'] }}</span>
+				</p>
+				<p class="blog-post-datum"><span><strong>Credibility Score:</strong></span> {{ "%.2f"|format(result['Credibility Score']) }}</p>
+				<p class="blog-post-body"><span><strong>Reliability Score:</strong></span> {{ "%.2f"|format(result['Reliability Score']) }}</p>
+				<p></p>
 			</div>
 		</div>
 

@@ -7,8 +7,9 @@ import library.pipeline as pipeline
 import library.query_builder as qb
 import library.web_crawler as wc
 import logging
-import pandas as pd
+import nltk
 import numpy as np
+import pandas as pd
 
 from datetime import date
 
@@ -21,6 +22,7 @@ if __name__ == "__main__":
 		datefmt='%Y-%m-%d %H:%M:%S')
 	logging.getLogger().setLevel(logging.INFO)
 
+	nltk.download(['stopwords', 'wordnet'])
 
 	## input comes from UI, maybe a list of inputs, modify code later
 	## contacting google with search string is done in nested loop
@@ -29,4 +31,4 @@ if __name__ == "__main__":
 	search_results, query_strings = pipeline.process_request(keywords_list, '')
 
 	print('Adverse Media Screened !!!')
-	search_results.to_excel('AMS.xlsx', index = False)
+	search_results.to_excel('./output/AMS.xlsx', index = False)

@@ -1,11 +1,13 @@
 import os
 import logging
+import nltk
 
 from flask import Flask, redirect, url_for
 from . import db, search
 
 
 def create_app(test_config=None):
+	nltk.download('stopwords')
 
 	# create and configure the app
 

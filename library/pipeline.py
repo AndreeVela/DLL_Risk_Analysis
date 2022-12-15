@@ -7,6 +7,7 @@ import library.dataframe_preprocessor as dp
 import library.doc_similarity as ds
 import logging
 import pandas as pd
+import math
 import numpy as np
 
 from datetime import date
@@ -19,8 +20,7 @@ def process_request( query_terms, country=None):
 	"""Performes the search"""
 
 	query_terms = query_terms if not country else query_terms + [ country ]
-	query_strings = qb.get_queries(query_terms)
-	query_strings, keyword_mapper, adverse_type_mapper = qb.get_queries()
+	query_strings, keyword_mapper, adverse_type_mapper = qb.get_queries(query_terms)
 
 	# Declaring what is scaraped from results
 
@@ -93,8 +93,7 @@ def sample_process_request(query_terms, country=None):
 	"""Performes the search"""
 
 	query_terms = query_terms if not country else query_terms + [ country ]
-	query_strings = qb.get_queries(query_terms)
-	query_strings, keyword_mapper, adverse_type_mapper = qb.get_queries()
+	query_strings, keyword_mapper, adverse_type_mapper = qb.get_queries(query_terms)
 
 	# Declaring what is scaraped from results
 
@@ -160,30 +159,28 @@ def sample_process_request(query_terms, country=None):
 
 
 	## stratified quarter sampling
-	
+
 	# groupby the date by quarters
 	hits_data = (final_hits_df
-			 	 .sort_values(by=['Date','Adversity Score'])
-			 	 .groupby(pd.Grouper(key='Date', freq="QS"))
-			 	 .apply(lambda x: x)
-			 	 .sort_values(by=['Date','Adversity Score'], ascending = [False, False]))
+				 .sort_values(by=['Date','Adversity Score'])
+				 .groupby(pd.Grouper(key='Date', freq="QS"))
+				 .apply(lambda x: x)
+				 .sort_values(by=['Date','Adversity Score'], ascending = [False, False]))
 
 	hits_data[ 'year_quarter' ] = hits_data.Date.dt.to_period('Q')
 
 	proportion = N_HITS / len( hits_data )
 	quarters_sampling_size_df = hits_data.groupby( "year_quarter" ).apply( lambda x: math.ceil(len(x) * proportion) )
 
-	top_hits = (
-	    hits_data
-	     .groupby( "year_quarter", as_index=False )
-	     .apply( lambda x: x.head( quarters_sampling_size_df[ x.year_quarter.iloc[0] ] ) )
-	     .sort_values( by="year_quarter", ascending=False )
-	     .set_index( "year_quarter" )
-	     ).reset_index().drop('year_quarter', axis = 1, inplace = True)
+	top_hits = ( (
+			hits_data
+				.groupby( "year_quarter", as_index=False )
+				.apply( lambda x: x.head( quarters_sampling_size_df[ x.year_quarter.iloc[0] ] ) )
+				.sort_values( by="year_quarter", ascending=False )
+				.set_index( "year_quarter" ) )
+		.reset_index()
+		.drop('year_quarter', axis = 1)
+	)
 
 	return top_hits, query_strings
-
-
-
-
 
