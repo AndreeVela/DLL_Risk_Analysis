@@ -38,7 +38,8 @@ def search():
 			error = 'You need to provide an entity'
 
 		if error is None:
-			search_results, query_strings = pipeline.sample_process_request(query_terms, '')
+			search_results, query_strings = pipeline.process_request(query_terms, '')
+			search_results = pipeline.stratified_sampling( search_results )
 			g.back_to_index = True
 
 			return render_template('search/results.html', entity=entity, country='', organization='',

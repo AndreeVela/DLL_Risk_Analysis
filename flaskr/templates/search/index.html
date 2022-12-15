@@ -5,26 +5,6 @@
 {% endblock %}
 
 {% block content %}
-<!-- 	<form method="post">
-		<label for="entity">Entity</label>
-		<input name="entity" id="entity" required>
-
-		<label for="country">Country</label>
-		<input name="country" id="country" required>
-
-		<button class="add_form_field" type='button'>
-			Add New Field &nbsp;<span >+</span>
-		</button>
-		<label for="search_terms">Search Terms</label>
-		<input name="search_terms" id="main_search_term" required>
-		<div class="search_terms_container"></div>
-
-
-		<label for="organization">Organization</label>
-		<input name="organization" id="organization">
-
-		<input type="submit" value="Search">
-	</form> -->
 
 	<form id="contactForm" method="post" class="needs-validation" novalidate>
 		<div class="mb-3">
@@ -39,10 +19,6 @@
 		</div>
 		<div class="mb-3">
 			<label class="form-label" for="searchTerms">Related Parties</label>
-			<!-- <input class="form-control" id="searchTerms" type="text"
-				placeholder="Search Term"
-				name="search_terms"
-				aria-describedby="searchTermsHelp"/> -->
 			<div id="searchTermsHelp" class="form-text">Add any other significan party that should be looked for (for example, Beneficial Owners). Add every extra entity in an individual input field.</div>
 			<div class="invalid-feedback" data-sb-feedback="searchTerms:required">Search Terms is required.</div>
 		</div>
@@ -104,23 +80,24 @@
 			})
 		});
 
-		(() => {
-				'use strict'
+		( () => {
+			'use strict'
 
-				// Fetch all the forms we want to apply custom Bootstrap validation styles to
-				const forms = document.querySelectorAll('.needs-validation')
+			const forms = document.querySelectorAll( '.needs-validation' )
 
-				// Loop over them and prevent submission
-				Array.from(forms).forEach(form => {
-					form.addEventListener('submit', event => {
-						if (!form.checkValidity()) {
-							event.preventDefault()
-							event.stopPropagation()
-						}
+			Array.from( forms ).forEach( form => {
+				form.addEventListener( 'submit', event => {
+					if( !form.checkValidity() ) {
+						event.preventDefault()
+						event.stopPropagation()
+					} else {
+						console
+						document.getElementById( 'submitButton' ).setAttribute( 'disabled', true )
+					}
 
-						form.classList.add('was-validated')
-					}, false)
-			  })
-			})()
+					form.classList.add('was-validated')
+				}, false )
+			} )
+		} )()
 	</script>
 {% endblock %}
