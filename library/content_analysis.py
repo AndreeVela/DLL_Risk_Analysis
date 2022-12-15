@@ -47,7 +47,7 @@ def extractor(url):
     #translator = Translator()
     #text = translator.translate(text, dest='en').text
 
-    if article_heading == '':
+    if article_heading.isalpha() == False:
         article_heading = text.split('.')[0].strip()
 
     return article_heading, text

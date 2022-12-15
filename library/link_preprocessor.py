@@ -147,7 +147,9 @@ def source_type_identifier(source, news):
                                 'youtube',
                                 'twitter',
                                 'reddit',
-                                'linkedin']
+                                'linkedin',
+                                'pinterest',
+                                'tumblr']
 
         for social_media in list_of_social_media:
             if social_media in source:

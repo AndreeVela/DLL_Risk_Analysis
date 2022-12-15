@@ -28,30 +28,5 @@ if __name__ == "__main__":
 	keywords_list = qb.get_inputFromUI()
 	search_results, query_strings = pipeline.process_request(keywords_list, '')
 
-	# top max 50 sources or URLs of Adverse Media
-	## picking the news that are related for the last five years
-
-	top_hits_df = search_results.loc[search_results['Recency'] == 1]
-	top_hits_df.sort_values(by=['Date', 'Adversity Score'], inplace=True, ascending = [False, False])
-	top_hits_df = top_hits_df.head(40)
-
-	'''
-	# document similarity and reliability analysis
-	top_hits_df_notsocialmedia = top_hits_df.loc[top_hits_df['Source Type'] != 'Social Media']
-	top_hits_df_notsocialmedia = top_hits_df_notsocialmedia[top_hits_df_notsocialmedia['Source Type'].notna()]
-	top_hits_df_notsocialmedia = top_hits_df_notsocialmedia[top_hits_df_notsocialmedia['Content'].notna()]
-
-	top_hits_df_notsocialmedia['Preprocessed Content'] = top_hits_df_notsocialmedia['Content'].apply(dp.text_process)
-	doc_similarity_df = ds.pairwise_doc_similariy(list(top_hits_df_notsocialmedia['URL']), list(top_hits_df_notsocialmedia['Content']))
-
-	avg_doc_similarity_scores = ds.compute_avg_similarity(np.array(doc_similarity_df))
-
-	top_hits_df_notsocialmedia['Reliability Score'] = avg_doc_similarity_scores
-
-	top_hits_df = pd.merge(top_hits_df, top_hits_df_notsocialmedia, on = 'URL', how = 'outer')
-	top_hits_df.drop_duplicates(inplace = True)
-	'''
-
 	print('Adverse Media Screened !!!')
 	search_results.to_excel('AMS.xlsx', index = False)
-	top_hits_df.to_excel('AMS_tophits.xlsx', index = False)

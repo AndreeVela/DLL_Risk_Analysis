@@ -135,14 +135,13 @@ def search_google_news(soup):
     date_list = []
     url_list = []
     
-#    page_no = 2
-    for page_no in range(2,10):
-#    while(1):
+    page_no = 2
+#    for page_no in range(2,10):
+    while(1):
         try:
             heading_list.extend([e.get_text(strip=True) for e in soup.find_all('div', {"role":"heading"})])
             date_list.extend([e.get_text(strip=True) for e in soup.find_all('div', {"class": "OSrXXb ZE0LJd YsWzw"})])
             url_list.extend([e.get("href") for e in soup.find_all("a",{"class":"WlydOe"})])
-    
             search_page = "Page " + str(page_no)
             search_url = soup.find("a", {"aria-label" : search_page}).get("href")
             soup = get_soup("https://www.google.com" + search_url)
