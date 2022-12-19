@@ -7,9 +7,10 @@
 }
 
 .blog-post-body {
-	display: inline-block;
-	width: 180px;
-	white-space: nowrap;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
 	overflow: hidden !important;
+	max-height: 100px;
 	text-overflow: ellipsis;
 }

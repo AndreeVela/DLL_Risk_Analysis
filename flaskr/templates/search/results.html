@@ -49,7 +49,9 @@
 					<span class="badge text-bg-secondary">{{ result['Adverse Type'] }}</span>
 				</p>
 				<p class="blog-post-datum"><span><strong>Credibility Score:</strong></span> {{ "%.2f"|format(result['Credibility Score']) }}</p>
-				<p class="blog-post-body"><span><strong>Reliability Score:</strong></span> {{ "%.2f"|format(result['Reliability Score']) }}</p>
+				<p class="blog-post-datum"><span><strong>Reliability Score:</strong></span> {{ "%.2f"|format(result['Reliability Score']) }}</p>
+				<p class="blog-post-datum"><span><strong>Adversity Score:</strong></span> {{ "%.2f"|format(result['Adversity Score']) }}</p>
+				<p class="blog-post-body"><span><strong>Content:</strong></span> {{ result['Content'] }}</p>
 				<p></p>
 			</div>
 		</div>
