@@ -37,7 +37,7 @@
 		<div class="row">
 			<div class="col">
 				<h5><a href="{{ result['URL'] }}" target="_blank">{{ result['Heading'] }}</a></h5>
-				<p class="blog-post-meta"><strong>Date: </strong>{{ result['Date'] }}</p>
+				<p class="blog-post-meta"><strong>Date: </strong>{{ result['Date'] }}&nbsp <span class="badge rounded-pill text-bg-secondary">{{ result['year_quarter'] }}</span></p>
 				<p class="blog-post-datum"><span><strong>Source:</strong></span> {{ result['Source'] }}</p>
 				<p class="blog-post-datum"><span><strong>Source Type:</strong></span> {{ result['Source Type'] }}</p>
 				<p class="blog-post-datum">
@@ -46,7 +46,7 @@
 				</p>
 				<p class="blog-post-datum">
 					<span><strong>Adverse Type:</strong></span>
-					<span class="badge text-bg-secondary">{{ result['Adverse Type'] }}</span>
+					<span class="badge rounded-pill text-bg-secondary">{{ result['Adverse Type'] }}</span>
 				</p>
 				<p class="blog-post-datum"><span><strong>Credibility Score:</strong></span> {{ "%.2f"|format(result['Credibility Score']) }}</p>
 				<p class="blog-post-datum"><span><strong>Reliability Score:</strong></span> {{ "%.2f"|format(result['Reliability Score']) }}</p>

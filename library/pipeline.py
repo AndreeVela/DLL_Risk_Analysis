@@ -92,27 +92,19 @@ def stratified_sampling(final_hits_df: pd.DataFrame):
 	"""
 	Performs a stratified sampling based on year quartiles.
 	"""
+	df = final_hits_df.copy()
+	df[ 'year_quarter' ] = df.Date.dt.to_period('Q')
 
-	hits_data = (final_hits_df
-				 .sort_values(by=['Date','Adversity Score'])
-				 .groupby(pd.Grouper(key='Date', freq="QS"))
-				 .apply(lambda x: x)
-				 .sort_values(by=['Date','Adversity Score'], ascending = [False, False]))
+	df = (df.sort_values(by=['year_quarter','Adversity Score'], ascending=[False, False])
+			.groupby('year_quarter')
+			.apply(lambda x: x))
 
-	hits_data[ 'year_quarter' ] = hits_data.Date.dt.to_period('Q')
 
-	proportion = N_HITS / len( hits_data )
-	quarters_sampling_size_df = hits_data.groupby( "year_quarter" ).apply( lambda x: math.ceil(len(x) * proportion) )
+	proportion = N_HITS / len( df )
+	quarters_sampling_size_df = df.groupby( "year_quarter" ).apply( lambda x: math.ceil(len(x) * proportion) )
 
-	top_hits = ( (
-			hits_data
-				.groupby( "year_quarter", as_index=False )
-				.apply( lambda x: x.head( quarters_sampling_size_df[ x.year_quarter.iloc[0] ] ) )
-				.sort_values( by="year_quarter", ascending=False )
-				.set_index( "year_quarter" ) )
-		.reset_index()
-		.drop('year_quarter', axis = 1)
-	)
-
-	return top_hits
+	return ( df.groupby( "year_quarter", as_index=False )
+			  .apply( lambda x: x.head( quarters_sampling_size_df[ x.year_quarter.iloc[0] ] ) )
+			  .sort_values( by="year_quarter", ascending=False )
+			  .set_index( "year_quarter" ) ).reset_index()
 
