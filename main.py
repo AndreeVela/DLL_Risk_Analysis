@@ -22,7 +22,7 @@ if __name__ == "__main__":
 		datefmt='%Y-%m-%d %H:%M:%S')
 	logging.getLogger().setLevel(logging.INFO)
 
-	nltk.download(['stopwords', 'wordnet'])
+	nltk.download( ['stopwords', 'wordnet'] )
 
 	## input comes from UI, maybe a list of inputs, modify code later
 	## contacting google with search string is done in nested loop

@@ -6,9 +6,11 @@ import re
 import numpy as np
 import library.link_preprocessor as lp
 import warnings
+import logging
+
 warnings.filterwarnings('ignore')
 
-
+logger = logging.getLogger()
 
 # getting the soup from query url
 def get_soup(query_url):
@@ -24,8 +26,8 @@ def getGoogleNewsURL(soup):
     topbarlinks = soup.find_all("div", {"class" : "hdtb-mitem"})
     
     ##Get the second item in google links
-    i=0
-    for link in topbarlinks:
+    news_link = ''
+    for i, link in enumerate(topbarlinks):
         i=i+1
         if i==2:
             news_tag = link
