@@ -14,4 +14,4 @@ RUN python3 -m venv .venv
 RUN pip install -r requirements.txt
 EXPOSE 8080
 
-CMD ["flask", "--app", "flaskr/", "--debug", "run", "--port", "8080", "--host", "0.0.0.0"]
+CMD gunicorn 'flaskr:create_app()'
