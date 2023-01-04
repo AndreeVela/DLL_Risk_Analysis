@@ -75,13 +75,13 @@ def get_hitsinformation(query_url, keywords_list):
     all_and_news_df['Source Type Check'] = all_and_news_df['Source'].apply(lp.entity_source_check, args = (keywords_list,))
     all_and_news_df.loc[all_and_news_df['Source Type Check'] == False, 'Source Type'] = ''
 
-    #all_and_news_df['Heading'] = all_and_news_df['URL'].apply(lp.extract_headline)
-
     # removing the 'NEWS' and 'Source Type Check' columns as it does not make sense anymore....
     all_and_news_df.drop(['NEWS', 'Source Type Check'], axis = 1, inplace = True)
 
-    
-    return all_and_news_df
+    # to identify real newspapers/magazines and prevent mis-idenfification
+    news_sources = list(all_and_news_df.loc[all_and_news_df['Source Type'] == 'Newspaper/Magazine', 'Source'].unique())
+
+    return all_and_news_df, news_sources
 
 
 

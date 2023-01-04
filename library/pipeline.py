@@ -17,6 +17,10 @@ URL_PREFIX = 'https://google.com/search?q='
 N_HITS = 20
 
 def process_request( query_terms, country=None):
+
+	# to identify real newspapers/magazines and prevent mis-idenfification
+	NEWS_SOURCES = []
+
 	"""Performes the search"""
 
 	query_terms = query_terms if not country else query_terms + [ country ]
@@ -31,7 +35,11 @@ def process_request( query_terms, country=None):
 	indexer = 0
 	for query in query_strings:
 		logger.info( f"Crawling query {indexer + 1}" )
-		hits_df = wc.get_hitsinformation(URL_PREFIX + query, query_terms)
+		hits_df, news_sources = wc.get_hitsinformation(URL_PREFIX + query, query_terms)
+		
+		# to identify real newspapers/magazines and prevent mis-idenfification
+		NEWS_SOURCES += news_sources
+
 		hits_df['Target Search'] = keyword_mapper[indexer]
 		hits_df['Adverse Type'] = adverse_type_mapper[indexer]
 		indexer += 1
@@ -40,6 +48,10 @@ def process_request( query_terms, country=None):
 	# credibility analysis (1 -> HIGHEST, 3 -> LOWEST)
 
 	logger.info( 'Credibility Scorer' )
+	
+	# to identify real newspapers/magazines and prevent mis-idenfification
+	final_hits_df.loc[final_hits_df['Source'].isin(NEWS_SOURCES), 'Source Type'] = 'Newspaper/Magazine'
+	
 	final_hits_df['Credibility Score'] = final_hits_df['Source Type'].apply(cra.score)
 
 	# relevancy analysis (< 5 years: 'Recency' = 1 and 0 otherwise)
