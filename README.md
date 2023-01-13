@@ -1,7 +1,17 @@
 # DLL Adverse Media Analysis
-Workspace for working in the intern project
+DLL's adverse media screening process was automated. This project corresponds the period Oct - Nov 2022 of EngD in Data Science program at JADS.
 
-## Setup (Mac OS/Linux)
+## Recommended Setup
+
+Build and run the project image using docker. The app will run over Gunicorn server inside the container.
+
+![Screenshot 2023-01-09](https://user-images.githubusercontent.com/6290688/212284162-cf7f34a5-2c49-4efc-a353-5f83d1b93ee3.png)
+
+
+## Manual Setup
+The manual setup uses make to install dependencies inside a virtual environment and run the app. However, the app will run in the development server provided by flask.
+
+### For Mac OS / Linux
 
 First, you need to create a new environment using the following commands:
 
@@ -22,7 +32,7 @@ make install
 et voilà! you are ready to go. 
 
 
-## Setup (Windows)
+### For Windows
 
 ```
 # inside to the project directory DLL_Risk_Analysis, to create a virtual environment
